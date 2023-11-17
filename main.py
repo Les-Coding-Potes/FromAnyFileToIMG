@@ -17,8 +17,6 @@ def to_bitmap(bytes):
 
     size = required_width * required_height * 4  # 4 bytes per pixel (RGBA)
 
-    bytes += b'\xFF\xFF\xFF\xFF'    # Marqueur de fin de données/fichier
-
     if len(bytes) < size:
         bytes += b'\x00' * (size - len(bytes))  # Arrivé a la fin on rempli avec des 0
 
@@ -31,12 +29,6 @@ def to_bitmap(bytes):
 def to_bytes(bitmap):
     data = np.array(bitmap)
     bytes = data.flatten().tobytes() # On converti l'image en bytes
-    end_marker = b'\xFF\xFF\xFF\xFF' # On vient chercher le marqueur de fin de données/fichier
-    end_index = bytes.find(end_marker)
-
-    if end_index != -1:
-        bytes = bytes[:end_index] # On coupe les bytes a la fin du marqueur
-
     bytes = gzip.decompress(bytes) # Une fois toutes les données récupérées on décompresse les bytes
 
     return bytes
